@@ -1,0 +1,23 @@
+{
+    "name": "kabir/hrms",
+    "description": "This is a MVC based project",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mohammad Kabir Hossain",
+            "email": "kabir.cse10@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Vendor\\": "vendor/"
+        },
+        "files": [
+            "app/helpers/functions.php"
+        ]
+    }
+}
