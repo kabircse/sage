@@ -1,4 +1,4 @@
-<p align="center"><img src="https://github.com/kabircse/sage/sage-logo.jpg"></p>
+<p align="center"><img src="https://github.com/kabircse/sage/blob/master/sage-logo.jpg"></p>
 
 ## About Sage
 
@@ -24,7 +24,7 @@ a powerful routing.
 
 ## Learning Sage:
 Sage has the documentation to get started with the framework.
- [Documentations](https://github.com/kabircse/sage/docs.md)    
+ [Documentations](https://github.com/kabircse/sage/blob/master/docs.md)    
 
 If you feel or got any bug/modification just push your code, I will merge.
 
