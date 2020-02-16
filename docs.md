@@ -1,7 +1,9 @@
-#Documentations:
 
-####Installation:
-   * ######Server Requirements:              
+# Documentations:
+
+
+#### Installation:
+   * ###### Server Requirements:              
         The Sage framework has a few system requirements. All of these requirements are given below:
         
         
@@ -37,7 +39,7 @@ This routes show the data from the index() methods of DemoController. We can als
 * The third parameter shows the your file/controller.
 * The fourth parameter shows the route name
 
-###Controller:
+### Controller:
 Create a controller named NameController to app\Controllers path extending Controller class.
  
 Ex:
@@ -80,15 +82,17 @@ We created a controller named as DemoController as
             }
     ?>
     
-###Model:
+### Model:
 For using model you have to create a model class to app/models path extending BaseModel class.
 There are several ways to access data from database, you can use separate model or you can use base model directly in your controller creating an instance of base model. 
-* ####Using Custom model: 
+
+#### Using Custom model: 
 We are using Address model class to our above controller. Access data from the address table using address model class.
 
-#####A. Manipulating data from base model over custom model using default methods. 
+##### A. Manipulating data from base model over custom model using default methods. 
     
 ####### 1. Get Data:
+
                 // for single row
                 $rs = $this->address->select("address_book")->fetch();
                             
@@ -128,6 +132,7 @@ We are using Address model class to our above controller. Access data from the a
                 $rs = $this->address->table("address_book")->sum("id");
        
 ####### 2. Insert:
+
                 // Insert single row
                 $row = [
                     "name" => "user2",
@@ -152,16 +157,19 @@ We are using Address model class to our above controller. Access data from the a
                 //$rs = $this->address->table("address_book")->insert($rows,'batch'); // normal insert with batch
                 
 #######3. Create,save:
-                // create row from scratch, if exists then update
-               $properties = ["name"=>'user20',"firstname"=>'',"city"=>''];
-               $row = $this->address->createRow("address_book", $properties );
-               $row->city = "Khulna";
-               $row->save();     
+
+                  // create row from scratch, if exists then update
+                 $properties = ["name"=>'user20',"firstname"=>'',"city"=>''];
+                 $row = $this->address->createRow("address_book", $properties );
+                 $row->city = "Khulna";
+                 $row->save();     
                
-####### 5. Delete                
+####### 5. Delete   
+
                 $rs = $this->address->table("address_book",19)->delete();
                                                       
 ##### B. Manipulate data from custom model using user defined/custom methods.
+
                 // query through pdo object from model, you must create that methods on your model
                 $rs = $this->address->get_by_pdo_query()->fetchAll();
                 // prepare through pdo object from model
@@ -176,7 +184,7 @@ and can access a table data using the instance of the Model as**
        $rs = $this->model->select("table_name")->fetch();
                     
         
-###Helper functions:
+### Helper functions:
 There are several helper functions. These are given below:
 
 **1. view($parm1,$parm2,$parm3)** : for include your page on the controller. The view() helper has 3 parameters.
@@ -234,7 +242,7 @@ For uploading a file to public/assets/uploads path.
     There are most common form field creation.
     
           
-  ####### Form input:  form_input('field_name','field_type','value','custom_attributes')  
+  ##### #Form input:  form_input('field_name','field_type','value','custom_attributes')  
   1. First parameter is the name of the field.  
   2. Second parameter is the type of input field(text,email etc ..)  
   3. Third parameter is the value, you can use to retrieve the previous value using old() functions  
@@ -242,7 +250,7 @@ For uploading a file to public/assets/uploads path.
    
          echo form_input('name','text',old('name'),'class="form-control form-control-sm" id="name" placeholder="Type name" required');
           
-  ####### Form Textarea:  form_textarea('field_name','value','custom_attributes')
+  ###### #Form Textarea:  form_textarea('field_name','value','custom_attributes')
   1. First parameter is the name of the field.    
   2. Third parameter is the value, you can use to retrieve the previous value using old() functions  
   3. Fourth parameter is the other attributes as string
@@ -250,7 +258,7 @@ For uploading a file to public/assets/uploads path.
    
         echo form_textarea('Description',null,$attribute='class="form-control" rows="2" placeholder="Type Descriptions" id="Description"');
 
-####### Form Select:  form_select('field_name','items_array','selected_item','custom_attributes')
+###### #Form Select:  form_select('field_name','items_array','selected_item','custom_attributes')
   1. First parameter is the name of the field.    
   2. Second parameter is the values of items in array  
   3. Third paramter is the selected items value
@@ -295,7 +303,7 @@ For uploading a file to public/assets/uploads path.
    * N.B: You must used the form-validation.php or use the code on your page for fetching errors or success/error msg as
    
              $errors = $errors ?? session('errors');
-###Template:
+### Template:
 There is not templating engine, we are using just php tag. We used a master page for loading all pages named at master.php to
     
      /resources/views/master.php. 
@@ -305,12 +313,12 @@ footer,header and sidebar page on
     /resources/views/template.
 Your can separate this structure according to your needs.
         
-###Logging:
+### Logging:
 For logging your errors you can use myLog(), it will create a log on /storage/logs
         
         myLog("That is working"):                
 
-###Session:
+### Session:
 There are session for working with your applications.
 
 ######1. Create: session('key','value')
@@ -321,7 +329,7 @@ There are session for working with your applications.
 
         session('is_logged_in');
         
-* Alternatively you can use session_put() and session_get() for create and read session
+ * Alternatively you can use session_put() and session_get() for create and read session
   
         
 ######3. Destroy: session_forget('key')        
@@ -330,7 +338,7 @@ There are session for working with your applications.
                 
 * session all: session_all() and session_empty() for reading entire session and removing entire session
 
-###File Upload:
+### File Upload:
 You can upload file as
 
     $upload = new Upload(); // load the file upload library or inherit this
