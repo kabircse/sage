@@ -215,10 +215,17 @@ We are keeping validation errors to session named errors for displaying with inp
     echo asset('dist/css/custom.css')   
 The css and js file loading located from assets directory. Load custom.css files from /assets/dist/custom.css as
 
-**6. route($url)**
+**6. route($url,$with)**
 
             route('demo/status/'   
 This functions link the url to the given path url using anchor href.
+The second parameter is a array of errors and inputs as you like to add for fetching later to show as:
+
+        $with = [
+            'errors' => ['name'=>'Would be a something.'],
+            'inputs' => $_REQUEST
+        ];
+        return redirect('demo/add',['with'=>$with]);
 
 **7. config('constants.constants_name')**
 For using constants you can use the config/constants file, put your constants there and you can access it where you want as    
@@ -248,11 +255,12 @@ For uploading a file to public/assets/uploads path.
   3. Third parameter is the value, you can use to retrieve the previous value using old() functions  
   4. Fourth parameter is the other attributes as string
    
-         echo form_input('name','text',old('name'),'class="form-control form-control-sm" id="name" placeholder="Type name" required');
+         echo form_input('name','text',old($inputs,'name'),'class="form-control form-control-sm" id="name" placeholder="Type name" required');
           
   ###### #Form Textarea:  form_textarea('field_name','value','custom_attributes')
   1. First parameter is the name of the field.    
-  2. Third parameter is the value, you can use to retrieve the previous value using old() functions  
+  2. Third parameter is the value, you can use to retrieve the previous value using old($inputs,'name') functions,
+  for showing previous value you have to add with parameter to route(). see route section.  
   3. Fourth parameter is the other attributes as string
        
    
@@ -287,12 +295,16 @@ For uploading a file to public/assets/uploads path.
                 notification(['type'=>'success', 'message'=>'Created Successfully']);
             }
             else {
-                session('errors',$rs->errorInfo());
+                $errors = $rs->errorInfo();
             }
         } else {
-            session('errors',$v->errors());
+            $errors = $v->errors();
         }
-        return redirect('demo/crate');
+        $with = [
+             'errors' => $errors,
+             'inputs' => $_REQUEST
+         ];
+         return redirect('demo/crate',['with'=>$with]);
         
    ##### Displaying form validation errors:
    For name field as:
@@ -300,9 +312,21 @@ For uploading a file to public/assets/uploads path.
         <?php if(isset($errors['name'])):?>
             <span class="text-danger"><?php echo $errors['name'][0]; ?></span>
         <?php endif;?>
-   * N.B: You must used the form-validation.php or use the code on your page for fetching errors or success/error msg as
-   
-             $errors = $errors ?? session('errors');
+        
+   #### Notification:     
+For form submission wrong/success, you can show a message as:
+        <?php if(session('notification_type')):?>
+            <p class="btn text-danger">
+                <?php echo session('notification_message'); ?>
+            </p>
+        <?php endif;
+            //reset it after displaying
+            session('notification_type',[]);
+        ?>    
+  For using this message you have to pass , your message as form controller: 
+  
+                    notification(['type'=>'success', 'message'=>'Created Successfully']);       
+        
 ### Template:
 There is not templating engine, we are using just php tag. We used a master page for loading all pages named at master.php to
     

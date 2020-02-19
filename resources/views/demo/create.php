@@ -7,7 +7,7 @@
         <?php echo session('notification_message'); ?>
     </p>
 <?php endif;
-    //reset
+    //reset it after displaying
     session('notification_type',[]);
 ?>
 
