@@ -20,8 +20,7 @@ class Controller {
             }
         }
     }
-
-    public function setJson($data){
+    /*public function setJson($data){
         return json_encode($data);
-    }
+    }*/
 }

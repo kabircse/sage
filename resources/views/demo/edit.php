@@ -4,6 +4,17 @@
         <h2>Update data</h2>
         <a href="<?php echo route('demo') ;?>">List</a> | <a href="<?php echo route('demo/add');?>">Add New</a>
         <br /><br />
+
+        <?php if(session('notification_type')):?>
+            <p class="btn text-danger">
+                <?php echo session('notification_message'); ?>
+            </p>
+        <?php endif;
+        //reset
+        session('notification_type',[]);
+        ?>
+
+
         <form action="<?php echo route('demo/update/'. $book->id);?>" method="POST" enctype="multipart/form-data">
             Name:<br>
             <input type="text" name="name" value="<?php echo $book->name; ?>"> <br>

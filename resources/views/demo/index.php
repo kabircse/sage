@@ -2,6 +2,15 @@
 <a href="<?php echo route('demo/add'); ?>">Add New</a> || <a href="<?php echo route('demo/demo-code')?>">Code Using Demo</a>
 <br/><br/>
 
+<?php if(session('notification_type')):?>
+    <p class="btn text-danger">
+        <?php echo session('notification_message'); ?>
+    </p>
+<?php endif;
+//reset
+session('notification_type',[]);
+?>
+
 <?php
     if (empty($address_books))
         echo "There is no data";

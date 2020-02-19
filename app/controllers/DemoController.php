@@ -158,7 +158,7 @@ class DemoController extends Controller {
      * @return View
      */
     public function create() {
-      $title = "Demo New";
+        $title = "Demo New";
         return view('demo/create',['title'=>$title],true);
     }
 
@@ -191,31 +191,45 @@ class DemoController extends Controller {
             //$sql = "INSERT INTO demo_book(name,firstname,street,zip_code,city) VALUES('$name','$firstname','$street','$zip_code','$city')";
             //$this->model->query($sql);
             //echo "Error: " . $sql . "<br>" . $this->model->error;
-            $data = [
-                'name'=>$name,
-                'firstname'=>$firstname,
-                'street'=>$street,
-                'zip_code'=>$zip_code,
-                'city'=>$city
-            ];
-            if ($this->upload->fileExists('image')) {
-                $image = $this->upload->make('image');
-                $image_file_name = time() .  '.jpg';
-                $image->save(upload_path('images/' . $image_file_name));
 
-                $data['image'] = $image_file_name;
-            }
-            $rs = $this->demo->table("demo_book")->insert($data);
-            if($rs) {
-                notification(['type'=>'success', 'message'=>'Created Successfully']);
-            }
-            else {
-                session('errors',$rs->errorInfo());
+            // name is a unique column, we are checking is it exists
+            $data = [
+                'name'=>$name
+            ];
+            if (!$this->demo->table('demo_book')->where($data)->count()) {
+                $data = [
+                    'firstname'=>$firstname,
+                    'street'=>$street,
+                    'zip_code'=>$zip_code,
+                    'city'=>$city
+                ];
+                if ($this->upload->fileExists('image')) {
+                    $image = $this->upload->make('image');
+                    $image_file_name = time() .  '.jpg';
+                    $image->save(upload_path('images/' . $image_file_name));
+
+                    $data['image'] = $image_file_name;
+                }
+                $rs = $this->demo->table("demo_book")->insert($data);
+                if($rs) {
+                    notification(['type'=>'success', 'message'=>'Created Successfully']);
+                }
+                else {
+                    $errors = $rs->errorInfo();
+                }
+            } else {
+                $errors = [
+                    'name' => ['User name is already exists.']
+                ];
             }
         } else {
-            session('errors',$v->errors());
+            $errors = $v->errors();
         }
-        return redirect('demo/add');
+        $with = [
+            'errors' => $errors ?: '',
+            'inputs' => $_REQUEST
+        ];
+        return redirect('demo/add',['with'=>$with]);
     }
 
     /**
@@ -284,35 +298,50 @@ class DemoController extends Controller {
             //$sql = "UPDATE demo_book SET name='$name',firstname='$firstname',street='$street',zip_code='$zip_code',city='$city' WHERE id='$id'";
             //$this->model->query($sql);
             $data = [
-                'name' => $name,
-                'firstname' => $firstname,
-                'street' => $street,
-                'zip_code' => $zip_code,
-                'city' => $city
+                'name' => $name
             ];
-            $path = "images/";
-            if ($this->upload->fileExists('image')) {
-                $image = $this->upload->make('image');
-                $image_file_name = time() .  '.jpg';
-                $image->save(upload_path('images/' . $image_file_name));
+            $book = $this->demo->table('demo_book')->where($data);
+            if (!$book->whereNot('id',$id)->count()) {
+                $data = [
+                    'firstname' => $firstname,
+                    'street' => $street,
+                    'zip_code' => $zip_code,
+                    'city' => $city
+                ];
 
-                $data['image'] = $image_file_name;
-                //remove old image first
-                if(file_exists($path.$image_file_name)) {
-                    unlink($path.$image_file_name);
+                $path = "images/";
+                if ($this->upload->fileExists('image')) {
+                    $image = $this->upload->make('image');
+                    $image_file_name = time() .  '.jpg';
+                    $image->save(upload_path('images/' . $image_file_name));
+
+                    $data['image'] = $image_file_name;
+                    //remove old image first
+                    if(file_exists($path.$image_file_name)) {
+                        unlink($path.$image_file_name);
+                    }
+                }
+                //$row = $this->model->table('demo_book',$id);
+                $rs = $book->update($data, 'prepared');
+                if($rs) {
+                    notification(['type'=>'success', 'message'=>'Updated Successfully']);
+                }
+                else {
+                    $errors = $rs->errorInfo();
                 }
             }
-            $row = $this->demo->table("demo_book", $id);
-            $rs = $row->update($data);
-            if ($rs) {
-                notification(['type' => 'success', 'message' => 'Updated Successfully']);
-            } else {
-                session('errors', $rs->errorInfo());
+            else {
+                $errors = [
+                    'name' => ['User name is already exists.']
+                ];
             }
         } else {
-            session('errors', $v->errors());
+            $errors = $v->errors();
         }
-        return redirect('demo/edit/' . $id);
+        $with = [
+            'errors' => $errors ?? ''
+        ];
+        return redirect('demo/edit/' . $id,['with'=>$with]);
     }
     /**
      * Remove the specified resource from storage.
@@ -329,14 +358,16 @@ class DemoController extends Controller {
                 notification(['type'=>'success', 'message'=>'Deleted Successfully']);
             }
             else {
-                session('errors',$demo->errorInfo());
+                $errors = $demo->errorInfo();
             }
         }
         else {
-            echo 'Update id not found.';
-            exit();
+            $errors = ['Update id not found.'];
         }
-        return redirect('demo');
+        $with = [
+            'errors' => $errors ?: ''
+        ];
+        return redirect('demo',['with'=>$with]);
     }
 
     public function export_xml() {

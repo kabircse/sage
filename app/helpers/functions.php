@@ -21,8 +21,31 @@ if (!function_exists('route')) {
  * @return to a relative url path
  */
 if (!function_exists('redirect')) {
-    function redirect($url=null) {
+    function redirect($url=null,$with=[]) {
+        if ($with){
+            with($with['with']);
+        }
+
         return header('Location:'.URL.$url);
+    }
+}
+
+/**
+ *  redirect application to an url
+ *
+ * @param string $url
+ * @return to a relative url path
+ */
+if (!function_exists('with')) {
+    function with($with=null)
+    {
+        $errors = $with['errors'] ?? null;
+        $inputs = $with['inputs'] ?? null;
+        //myLog("errors:".json_encode($errors));
+        //myLog("inputs:".json_encode($inputs));
+
+        session('errors', $errors);
+        session('inputs', $inputs);
     }
 }
 
@@ -39,6 +62,16 @@ if (!function_exists('view')) {
         extract($data);
         // if master false then open page without master.php(header,footer)
         $view = ($master == true) ? 'master.php' : $page.'.php';
+
+        //for displaying errors, dump $errors variable
+        $errors = $errors ?? session('errors');
+        //for displaying old inputs, dump $olds variable
+        $inputs = $inputs ?? session('inputs');
+
+        // after displaying view page, remove errors and inputs variable
+        session('errors',[]);
+        session('inputs',[]);
+        //dd(session('errors'));
         require(View . $view);
     }
 }
@@ -134,10 +167,11 @@ if (!function_exists('dump')) {
  * @return requested field values
  */
 if (!function_exists('old')) {
-    function old($var=null)
+    function old($inputs=[],$var=null)
     {
-        if(is_string($var) && array_key_exists($var,$_REQUEST)){
-            return $_REQUEST[$var];
+        //myLog("session('inputs')):".json_encode(session('inputs')[$var]));
+        if(is_string($var) && array_key_exists($var,$inputs)) {
+            return $inputs[$var];
         }
         return false;
     }
@@ -170,9 +204,9 @@ if (!function_exists('session')) {
     function session($key=null,$val=null)
     {
         if(is_array($key)){
-             foreach ($key as $item=>$val){
-                 $_SESSION[$item] = $val;
-             }
+            foreach ($key as $item=>$val){
+                $_SESSION[$item] = $val;
+            }
         }
         else if(isset($key) && isset($val)){
             return $_SESSION[$key] = $val;

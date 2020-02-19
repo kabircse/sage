@@ -1,29 +1,39 @@
 <h2>Add New</h2>
 <a href="<?php echo URL?>demo">List</a>
 <br /><br />
+
+<?php if(session('notification_type')):?>
+    <p class="btn text-danger">
+        <?php echo session('notification_message'); ?>
+    </p>
+<?php endif;
+    //reset
+    session('notification_type',[]);
+?>
+
 <form action="<?php echo URL?>demo/save" method="post" enctype="multipart/form-data">
   Name:<br>
-  <input type="text" name="name" value="<?php echo old('name');?>"> <br>
+  <input type="text" name="name" value="<?php echo old($inputs,'name');?>"> <br>
     <?php if(isset($errors['name'])):?>
     <span class="text-danger"><?php echo $errors['name'][0]; ?></span>
     <?php endif;?> <br />
   First name:<br>
-  <input type="text" name="firstname" value="<?php echo old('firstname');?>"> <br>
+  <input type="text" name="firstname" value="<?php echo old($inputs,'firstname');?>"> <br>
     <?php if(isset($errors['firstname'])):?>
         <span class="text-danger"><?php echo $errors['firstname'][0]; ?></span>
     <?php endif;?>       <br />
   Street:<br>
-  <input type="text" name="street" value="<?php echo old('street');?>"> <br>
+  <input type="text" name="street" value="<?php echo old($inputs,'street');?>"> <br>
     <?php if(isset($errors['street'])):?>
         <span class="text-danger"><?php echo $errors['street'][0]; ?></span>
     <?php endif;?>       <br />
   Zip Code:<br>
-  <input type="text" name="zip_code" value="<?php echo old('zip_code');?>"> <br>
+  <input type="text" name="zip_code" value="<?php echo old($inputs,'zip_code');?>"> <br>
     <?php if(isset($errors['zip_code'])):?>
     <span class="text-danger"><?php echo $errors['zip_code'][0]; ?></span>
     <?php endif;?>       <br />
   City:<br>
-  <input type="text" name="city" value="<?php echo old('city');?>"> <br>
+  <input type="text" name="city" value="<?php echo old($inputs,'city');?>"> <br>
     <?php if(isset($errors['city'])):?>
     <span class="text-danger"><?php echo $errors['city'][0]; ?></span>
     <?php endif;?>       <br />

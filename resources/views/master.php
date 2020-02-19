@@ -1,5 +1,5 @@
 <?php
-include_once(View . '/errors/form-validation.php');
+//include_once(View . '/errors/form-validation.php');
 require_once('template/header.php');
 require_once('template/sidebar.php');
 if(isset($page) && is_readable(View.$page.'.php')){

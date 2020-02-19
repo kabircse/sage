@@ -1,6 +1,6 @@
 {
-    "name": "kabir/hrms",
-    "description": "This is a MVC based project",
+    "name": "kabircse/sage",
+    "description": "This is a MVC based lightweight,fast php framework",
     "type": "project",
     "license": "MIT",
     "authors": [

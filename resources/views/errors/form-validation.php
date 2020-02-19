@@ -1,6 +1,6 @@
 
 <?php
-    $errors = $errors ?? session('errors');
+    /*$errors = $errors ?? session('errors');
 
     //displaying all errors
     if($errors) {
@@ -22,7 +22,7 @@
 
         //clear errors after displaying
         session('notification_type', []);
-    }
+    }*/
 
 ?>
 
