@@ -20,8 +20,8 @@
         Sage utilizes Composer to manage its dependencies. So, before using sage, make sure you have Composer installed on your machine.
  
       First, download the Sage using Composer:
-   
-           composer global require laravel/installer   
+  
+           omposer create-project kabircse/sage
 
   After install setup your databaes to /config/database.php.
   If you get any problem with file missing/autoload, then run this command in you project folder using a command:
