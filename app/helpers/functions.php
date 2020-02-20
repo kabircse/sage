@@ -167,17 +167,17 @@ if (!function_exists('dump')) {
  * @return requested field values
  */
 if (!function_exists('old')) {
-    function old($inputs=[],$var=null)
+    function old($inputs,$var=null)
     {
-        //myLog("session('inputs')):".json_encode(session('inputs')[$var]));
-        if(is_string($var) && array_key_exists($var,$inputs)) {
-            return $inputs[$var];
+        //myLog("session('inputs')):".json_encode(session('inputs')));
+        if(is_string($var) && is_array($inputs)) {
+            return array_key_exists($var,$inputs)? $inputs[$var]:null;
         }
         return false;
     }
 }
 
-
+//<br /><b>Warning</b>:  array_key_exists() expects parameter 2 to be array, string given in <b>E:\xampp-7\htdocs\sage\app\helpers\functions.php</b> on line <b>173</b><br />
 /**
  * get populate input values
  *

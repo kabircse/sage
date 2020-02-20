@@ -92,8 +92,12 @@ class DemoController extends Controller {
         ];
         //$rs = $this->demo->table("demo_book")->insert($row); normal query
         //$rs = $this->demo->table("demo_book")->insert($rows,'prepared'); // "prepared" query best
-                // for security reason
+
+        // for security reason
         //$rs = $this->demo->table("demo_book")->insert($rows,'batch'); // normal insert with batch
+
+        //last insert id after single row insertion
+        //$last_insert_id = $this->demo->lastInsertId());
 
         //11. UPDATE, Delete
         $row = [
@@ -210,7 +214,9 @@ class DemoController extends Controller {
 
                     $data['image'] = $image_file_name;
                 }
-                $rs = $this->demo->table("demo_book")->insert($data);
+                $rs = $this->demo->table("demo_book")->insert($data);//->fetch();
+                //myLog("last insert id:".json_encode($this->demo->lastInsertId()));
+                dd($rs);
                 if($rs) {
                     notification(['type'=>'success', 'message'=>'Created Successfully']);
                 }
