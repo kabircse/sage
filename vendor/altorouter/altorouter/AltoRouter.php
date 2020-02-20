@@ -1,37 +1,10 @@
 <?php
-namespace Vendor\AltoRouter;
-/*
-MIT License
-
-Copyright (c) 2012 Danny van Kooten <hi@dannyvankooten.com>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
 
 class AltoRouter {
 
-	/**
-	 * @var array Array of all routes (incl. named routes).
-	 */
 	protected $routes = array();
-
-	/**
-	 * @var array Array of all named routes.
-	 */
 	protected $namedRoutes = array();
-
-	/**
-	 * @var string Can be used to ignore leading part of the Request URL (if main file lives in subdirectory of host)
-	 */
 	protected $basePath = '';
-
-	/**
-	 * @var array Array of default match types (regex helpers)
-	 */
 	protected $matchTypes = array(
 		'i'  => '[0-9]++',
 		'a'  => '[0-9A-Za-z]++',
@@ -53,15 +26,6 @@ class AltoRouter {
 		$this->setBasePath($basePath);
 		$this->addMatchTypes($matchTypes);
 	}
-	
-	/**
-	 * Retrieves all routes.
-	 * Useful if you want to process or display routes.
-	 * @return array All routes.
-	 */
-	public function getRoutes() {
-		return $this->routes;
-	}
 
 	/**
 	 * Add multiple routes at once from array in the following format:
@@ -73,7 +37,6 @@ class AltoRouter {
 	 * @param array $routes
 	 * @return void
 	 * @author Koen Punt
-	 * @throws Exception
 	 */
 	public function addRoutes($routes){
 		if(!is_array($routes) && !$routes instanceof Traversable) {
@@ -104,11 +67,10 @@ class AltoRouter {
 	/**
 	 * Map a route to a target
 	 *
-	 * @param string $method One of 5 HTTP Methods, or a pipe-separated list of multiple HTTP Methods (GET|POST|PATCH|PUT|DELETE)
+	 * @param string $method One of 4 HTTP Methods, or a pipe-separated list of multiple HTTP Methods (GET|POST|PUT|DELETE)
 	 * @param string $route The route regex, custom regex must start with an @. You can use multiple pre-set regex filters, like [i:id]
 	 * @param mixed $target The target where this route should point to. Can be anything.
 	 * @param string $name Optional name of this route. Supply if you want to reverse route this url in your application.
-	 * @throws Exception
 	 */
 	public function map($method, $route, $target, $name = null) {
 
@@ -134,7 +96,6 @@ class AltoRouter {
 	 * @param string $routeName The name of the route.
 	 * @param array @params Associative array of parameters to replace placeholders with.
 	 * @return string The URL of the route with named parameters in place.
-	 * @throws Exception
 	 */
 	public function generate($routeName, array $params = array()) {
 
@@ -151,7 +112,7 @@ class AltoRouter {
 
 		if (preg_match_all('`(/|\.|)\[([^:\]]*+)(?::([^:\]]*+))?\](\?|)`', $route, $matches, PREG_SET_ORDER)) {
 
-			foreach($matches as $index => $match) {
+			foreach($matches as $match) {
 				list($block, $pre, $type, $param, $optional) = $match;
 
 				if ($pre) {
@@ -159,16 +120,12 @@ class AltoRouter {
 				}
 
 				if(isset($params[$param])) {
-					// Part is found, replace for param value
 					$url = str_replace($block, $params[$param], $url);
-				} elseif ($optional && $index !== 0) {
-					// Only strip preceeding slash if it's not at the base
+				} elseif ($optional) {
 					$url = str_replace($pre . $block, '', $url);
-				} else {
-					// Strip match block
-					$url = str_replace($block, '', $url);
 				}
 			}
+
 
 		}
 
@@ -204,36 +161,65 @@ class AltoRouter {
 			$requestMethod = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
 		}
 
+		// Force request_order to be GP
+		// http://www.mail-archive.com/internals@lists.php.net/msg33119.html
+		$_REQUEST = array_merge($_GET, $_POST);
+
 		foreach($this->routes as $handler) {
-			list($methods, $route, $target, $name) = $handler;
+			list($method, $_route, $target, $name) = $handler;
 
-			$method_match = (stripos($methods, $requestMethod) !== false);
+			$methods = explode('|', $method);
+			$method_match = false;
 
-			// Method did not match, continue to next route.
-			if (!$method_match) continue;
-
-			if ($route === '*') {
-				// * wildcard (matches all)
-				$match = true;
-			} elseif (isset($route[0]) && $route[0] === '@') {
-				// @ regex delimiter
-				$pattern = '`' . substr($route, 1) . '`u';
-				$match = preg_match($pattern, $requestUrl, $params) === 1;
-			} elseif (($position = strpos($route, '[')) === false) {
-				// No params in url, do string comparison
-				$match = strcmp($requestUrl, $route) === 0;
-			} else {
-				// Compare longest non-param string with url
-				if (strncmp($requestUrl, $route, $position) !== 0) {
-					continue;
+			// Check if request method matches. If not, abandon early. (CHEAP)
+			foreach($methods as $method) {
+				if (strcasecmp($requestMethod, $method) === 0) {
+					$method_match = true;
+					break;
 				}
-				$regex = $this->compileRoute($route);
-				$match = preg_match($regex, $requestUrl, $params) === 1;
 			}
 
-			if ($match) {
+			// Method did not match, continue to next route.
+			if(!$method_match) continue;
 
-				if ($params) {
+			// Check for a wildcard (matches all)
+			if ($_route === '*') {
+				$match = true;
+			} elseif (isset($_route[0]) && $_route[0] === '@') {
+				$match = preg_match('`' . substr($_route, 1) . '`u', $requestUrl, $params);
+			} else {
+				$route = null;
+				$regex = false;
+				$j = 0;
+				$n = isset($_route[0]) ? $_route[0] : null;
+				$i = 0;
+
+				// Find the longest non-regex substring and match it against the URI
+				while (true) {
+					if (!isset($_route[$i])) {
+						break;
+					} elseif (false === $regex) {
+						$c = $n;
+						$regex = $c === '[' || $c === '(' || $c === '.';
+						if (false === $regex && false !== isset($_route[$i+1])) {
+							$n = $_route[$i + 1];
+							$regex = $n === '?' || $n === '+' || $n === '*' || $n === '{';
+						}
+						if (false === $regex && $c !== '/' && (!isset($requestUrl[$j]) || $c !== $requestUrl[$j])) {
+							continue 2;
+						}
+						$j++;
+					}
+					$route .= $_route[$i++];
+				}
+
+				$regex = $this->compileRoute($route);
+				$match = preg_match($regex, $requestUrl, $params);
+			}
+
+			if(($match == true || $match > 0)) {
+
+				if($params) {
 					foreach($params as $key => $value) {
 						if(is_numeric($key)) unset($params[$key]);
 					}
@@ -252,7 +238,7 @@ class AltoRouter {
 	/**
 	 * Compile the regex for a given route (EXPENSIVE)
 	 */
-	protected function compileRoute($route) {
+	private function compileRoute($route) {
 		if (preg_match_all('`(/|\.|)\[([^:\]]*+)(?::([^:\]]*+))?\](\?|)`', $route, $matches, PREG_SET_ORDER)) {
 
 			$matchTypes = $this->matchTypes;
@@ -266,18 +252,14 @@ class AltoRouter {
 					$pre = '\.';
 				}
 
-				$optional = $optional !== '' ? '?' : null;
-				
 				//Older versions of PCRE require the 'P' in (?P<named>)
 				$pattern = '(?:'
 						. ($pre !== '' ? $pre : null)
 						. '('
 						. ($param !== '' ? "?P<$param>" : null)
 						. $type
-						. ')'
-						. $optional
-						. ')'
-						. $optional;
+						. '))'
+						. ($optional !== '' ? '?' : null);
 
 				$route = str_replace($block, $pattern, $route);
 			}

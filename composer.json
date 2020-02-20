@@ -10,11 +10,15 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {},
+    "require": {
+        "morris/lessql": "master",
+        "altorouter/altorouter": "1.1.0",
+        "vlucas/valitron": "master"
+    },
     "autoload": {
         "psr-4": {
             "App\\": "app/",
-            "Vendor\\": "vendor/"
+            "Vendor\\Namespace\\": "vendor/"
         },
         "files": [
             "app/helpers/functions.php"

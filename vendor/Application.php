@@ -46,8 +46,8 @@ class Application {
         $match = $this->router->match();
         if( is_array($match)) { // && is_callable( $match['target'] ) ) {
             // Load vendor after route confirmation
-            @require App.'config/config.php';
-            @require_once App.'config/database.php';
+            @require App . 'config/config.php';
+            @require_once App . 'config/database.php';
 
             // Get controller and action from router url
             list( $this->controller, $this->action ) = explode( '@', $match['target'] );

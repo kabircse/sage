@@ -1,5 +1,5 @@
 /node_modules
 /storage/*.key
-/vendor/composer
+/vendor
 /storage/logs
 .idea

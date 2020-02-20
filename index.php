@@ -30,5 +30,4 @@ require_once Root.'vendor/autoload.php';
 $base_path = $url_sub_folder; //'/HL-HR' fixed;
 
 /** @var Application $app */
-$app = new Vendor\Application($base_path);
-$app->run();
+@require ('app.php');

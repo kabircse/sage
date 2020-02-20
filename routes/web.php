@@ -1,5 +1,5 @@
 <?php
-$router = $this->router;
+//$router = $this->router;
 
 // Demo controller resources
 $router->map('GET','/', 'DemoController@index');

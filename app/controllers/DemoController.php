@@ -150,7 +150,7 @@ class DemoController extends Controller {
             dump($author->jsonSerialize());
         }*/
 
-        $address_books = $this->demo->table("demo_book")->fetchAll();
+        $address_books = $this->demo->table("demo_book")->lastInsertId();
         $title = "Demo book List";
         return view('demo/index',['address_books'=>$address_books,'title'=>$title],true);
     }
