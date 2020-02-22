@@ -196,10 +196,18 @@ The first parameter is the page to include here from resources/view/demo/create.
 The second parameter is the array of your data needs according to your demand for create.php page,
 The third parameter is the boolean status for loading the template or not.
 
-**2. redirect($url)**
+**2. redirect($url,$with)**
 
     redirect('demo')  
+    
 This function redirect a request to the give url. There this url redirect the user to /demo url named to web.php
+The second parameter is a array of errors and inputs as you like to add for fetching later to show as:
+
+        $with = [
+            'errors' => ['name'=>'Would be a something.'],
+            'inputs' => $_REQUEST
+        ];
+        return redirect('demo/add',['with'=>$with]);
 
 **3. notification($array('msg_type'=>'success','msg'=>'Created successfully.'))**
 
@@ -216,17 +224,10 @@ We are keeping validation errors to session named errors for displaying with inp
     echo asset('dist/css/custom.css')   
 The css and js file loading located from assets directory. Load custom.css files from /assets/dist/custom.css as
 
-**6. route($url,$with)**
+**6. route($url)**
 
-            route('demo/status/'   
+            route('demo/status/');   
 This functions link the url to the given path url using anchor href.
-The second parameter is a array of errors and inputs as you like to add for fetching later to show as:
-
-        $with = [
-            'errors' => ['name'=>'Would be a something.'],
-            'inputs' => $_REQUEST
-        ];
-        return redirect('demo/add',['with'=>$with]);
 
 **7. config('constants.constants_name')**
 For using constants you can use the config/constants file, put your constants there and you can access it where you want as    
