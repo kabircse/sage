@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use Vendor\LessQL\Database;
+use LessQL\Database;
 
 class Model extends Database {
-    //protected $db;
     protected $pdo;
     public function __construct() {
         $dsn = 'mysql:dbname='.DB_NAME.';host='.DB_HOST;

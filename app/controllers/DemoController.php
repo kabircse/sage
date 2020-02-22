@@ -52,8 +52,9 @@ class DemoController extends Controller {
         //3. get data from base model with select
         //$rs = $this->demo->table("demo_book")->select("id,name")->fetch()->jsonSerialize();
 
-        //4. find by id
-        //$rs = $this->demo->table("demo_book",5)->jsonSerialize();
+        //4. find by primary key column
+        //$rs = $this->demo->table("demo_book",4)->jsonSerialize();
+        //dd($rs);
 
         //5. query with where
         //$rs = $this->demo->table("demo_book")->where("id",7)->fetch();
@@ -94,10 +95,11 @@ class DemoController extends Controller {
         //$rs = $this->demo->table("demo_book")->insert($rows,'prepared'); // "prepared" query best
 
         // for security reason
-        //$rs = $this->demo->table("demo_book")->insert($rows,'batch'); // normal insert with batch
+        $rs = $this->demo->table("demo_book")->insert($rows,'batch'); // normal insert with batch
 
         //last insert id after single row insertion
-        //$last_insert_id = $this->demo->lastInsertId());
+        //$last_insert_id = $this->demo->lastInsertId();
+        //dd($last_insert_id);
 
         //11. UPDATE, Delete
         $row = [
@@ -150,7 +152,7 @@ class DemoController extends Controller {
             dump($author->jsonSerialize());
         }*/
 
-        $address_books = $this->demo->table("demo_book")->lastInsertId();
+        $address_books = $this->demo->table("demo_book")->fetchAll();
         $title = "Demo book List";
         return view('demo/index',['address_books'=>$address_books,'title'=>$title],true);
     }
