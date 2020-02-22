@@ -5,7 +5,7 @@ namespace App\Controllers;
 use App\library\Upload;
 use App\Models\Demo;
 use App\Models\Model;
-use Vendor\Valitron\Validator;
+use Valitron\Validator;
 
 class DemoController extends Controller {
     /**

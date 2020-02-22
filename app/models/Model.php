@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Vendor\LessQL\Database;
+use LessQL\Database;
 
 class Model extends Database {
     //protected $db;
