@@ -1,5 +1,7 @@
 /node_modules
 /storage/*.key
 /vendor/composer
+/vendor/autoload.php
 /storage/logs
+/storage/sessions
 .idea
