@@ -52,8 +52,9 @@ class DemoController extends Controller {
         //3. get data from base model with select
         //$rs = $this->demo->table("demo_book")->select("id,name")->fetch()->jsonSerialize();
 
-        //4. find by id
-        //$rs = $this->demo->table("demo_book",5)->jsonSerialize();
+        //4. find by primary key column
+        //$rs = $this->demo->table("demo_book",5)->fetch();
+        //dd($rs);
 
         //5. query with where
         //$rs = $this->demo->table("demo_book")->where("id",7)->fetch();
