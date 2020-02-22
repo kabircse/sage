@@ -21,7 +21,7 @@
  
       First, download the Sage using Composer:
    
-           composer global require "kabircse/sage":"dev-master"
+           composer create-project kabircse/sage:1.0.x-dev
            
 
   After install setup your databaes to /config/database.php.
