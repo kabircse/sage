@@ -1,0 +1,39 @@
+[22-Feb-2020 14:40:44 Asia/Dhaka] PHP Fatal error:  Uncaught PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pk_id' in 'where clause' in E:\xampp-7\htdocs\sage\vendor\morris\lessql\src\LessQL\Database.php:480
+Stack trace:
+#0 E:\xampp-7\htdocs\sage\vendor\morris\lessql\src\LessQL\Database.php(480): PDOStatement->execute(Array)
+#1 E:\xampp-7\htdocs\sage\vendor\morris\lessql\src\LessQL\Result.php(149): LessQL\Database->select('demo_book', Array)
+#2 E:\xampp-7\htdocs\sage\vendor\morris\lessql\src\LessQL\Result.php(322): LessQL\Result->execute()
+#3 E:\xampp-7\htdocs\sage\vendor\morris\lessql\src\LessQL\Database.php(63): LessQL\Result->fetch()
+#4 E:\xampp-7\htdocs\sage\app\controllers\DemoController.php(252): LessQL\Database->table('demo_book', Array)
+#5 E:\xampp-7\htdocs\sage\app.php(19): App\Controllers\DemoController->edit('3')
+#6 E:\xampp-7\htdocs\sage\index.php(33): require('E:\\xampp-7\\htdo...')
+#7 {main}
+  thrown in E:\xampp-7\htdocs\sage\vendor\morris\lessql\src\LessQL\Database.php on line 480
+[22-Feb-2020 14:55:28 Asia/Dhaka] PHP Notice:  Undefined variable: errors in E:\xampp-7\htdocs\sage\app\controllers\DemoController.php on line 373
+[22-Feb-2020 14:55:31 Asia/Dhaka] PHP Notice:  Undefined variable: errors in E:\xampp-7\htdocs\sage\app\controllers\DemoController.php on line 373
+[22-Feb-2020 14:57:09 Asia/Dhaka] PHP Fatal error:  Class 'Vendor\LessQL\Database' not found in E:\xampp-7\htdocs\sage\app\models\Model.php on line 7
+[22-Feb-2020 14:57:31 Asia/Dhaka] PHP Fatal error:  Uncaught LogicException: Cannot set Row "clean" without id in E:\xampp-7\htdocs\sage\vendor\morris\lessql\src\LessQL\Row.php:478
+Stack trace:
+#0 E:\xampp-7\htdocs\sage\vendor\morris\lessql\src\LessQL\Result.php(158): LessQL\Row->setClean()
+#1 E:\xampp-7\htdocs\sage\vendor\morris\lessql\src\LessQL\Result.php(334): LessQL\Result->execute()
+#2 E:\xampp-7\htdocs\sage\app\controllers\DemoController.php(155): LessQL\Result->fetchAll()
+#3 E:\xampp-7\htdocs\sage\app.php(22): App\Controllers\DemoController->index()
+#4 E:\xampp-7\htdocs\sage\index.php(33): require('E:\\xampp-7\\htdo...')
+#5 {main}
+  thrown in E:\xampp-7\htdocs\sage\vendor\morris\lessql\src\LessQL\Row.php on line 478
+[22-Feb-2020 14:57:32 Asia/Dhaka] PHP Fatal error:  Uncaught LogicException: Cannot set Row "clean" without id in E:\xampp-7\htdocs\sage\vendor\morris\lessql\src\LessQL\Row.php:478
+Stack trace:
+#0 E:\xampp-7\htdocs\sage\vendor\morris\lessql\src\LessQL\Result.php(158): LessQL\Row->setClean()
+#1 E:\xampp-7\htdocs\sage\vendor\morris\lessql\src\LessQL\Result.php(334): LessQL\Result->execute()
+#2 E:\xampp-7\htdocs\sage\app\controllers\DemoController.php(155): LessQL\Result->fetchAll()
+#3 E:\xampp-7\htdocs\sage\app.php(22): App\Controllers\DemoController->index()
+#4 E:\xampp-7\htdocs\sage\index.php(33): require('E:\\xampp-7\\htdo...')
+#5 {main}
+  thrown in E:\xampp-7\htdocs\sage\vendor\morris\lessql\src\LessQL\Row.php on line 478
+[22-Feb-2020 14:57:53 Asia/Dhaka] PHP Fatal error:  Uncaught Error: Class 'Vendor\Valitron\Validator' not found in E:\xampp-7\htdocs\sage\app\controllers\DemoController.php:290
+Stack trace:
+#0 E:\xampp-7\htdocs\sage\app.php(19): App\Controllers\DemoController->update('109')
+#1 E:\xampp-7\htdocs\sage\index.php(33): require('E:\\xampp-7\\htdo...')
+#2 {main}
+  thrown in E:\xampp-7\htdocs\sage\app\controllers\DemoController.php on line 290
+[22-Feb-2020 14:58:32 Asia/Dhaka] PHP Notice:  Undefined variable: errors in E:\xampp-7\htdocs\sage\app\controllers\DemoController.php on line 376
