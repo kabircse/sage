@@ -5,7 +5,7 @@ namespace App\Controllers;
 use App\library\Upload;
 use App\Models\Demo;
 use App\Models\Model;
-use Vendor\Valitron\Validator;
+use Valitron\Validator;
 
 class DemoController extends Controller {
     /**
@@ -199,11 +199,9 @@ class DemoController extends Controller {
             //echo "Error: " . $sql . "<br>" . $this->model->error;
 
             // name is a unique column, we are checking is it exists
-            $data = [
-                'name'=>$name
-            ];
-            if (!$this->demo->table('demo_book')->where($data)->count()) {
+            if (!$this->demo->table('demo_book')->where('name', $name)->count()) {
                 $data = [
+                    'name' => $name,
                     'firstname'=>$firstname,
                     'street'=>$street,
                     'zip_code'=>$zip_code,
@@ -216,9 +214,10 @@ class DemoController extends Controller {
 
                     $data['image'] = $image_file_name;
                 }
+                //dd($data);
                 $rs = $this->demo->table("demo_book")->insert($data);//->fetch();
                 //myLog("last insert id:".json_encode($this->demo->lastInsertId()));
-                dd($rs);
+                //dd($rs);
                 if($rs) {
                     notification(['type'=>'success', 'message'=>'Created Successfully']);
                 }
@@ -234,7 +233,7 @@ class DemoController extends Controller {
             $errors = $v->errors();
         }
         $with = [
-            'errors' => $errors ?: '',
+            'errors' => $errors ?? '',
             'inputs' => $_REQUEST
         ];
         return redirect('demo/add',['with'=>$with]);
@@ -254,8 +253,7 @@ class DemoController extends Controller {
             return view('demo/edit',compact('title','book'));
         }
         else
-            session('errors',"Not found.");
-        return redirect('demo/edit/'.$id);
+            exit('There is no resource found.');
     }
 
 
@@ -305,12 +303,11 @@ class DemoController extends Controller {
             $city = validation($_POST['city']) ?? null;
             //$sql = "UPDATE demo_book SET name='$name',firstname='$firstname',street='$street',zip_code='$zip_code',city='$city' WHERE id='$id'";
             //$this->model->query($sql);
-            $data = [
-                'name' => $name
-            ];
-            $book = $this->demo->table('demo_book')->where($data);
+
+            $book = $this->demo->table('demo_book')->where('name',$name);
             if (!$book->whereNot('id',$id)->count()) {
                 $data = [
+                    'name' => $name,
                     'firstname' => $firstname,
                     'street' => $street,
                     'zip_code' => $zip_code,

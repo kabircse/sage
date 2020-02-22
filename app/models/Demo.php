@@ -9,7 +9,7 @@ class Demo extends Model {
         parent::__construct();
 
         // when id is not primary key then define another column as primary key
-         $this->primary[$this->_table] = 'pk_id';
+         //$this->primary[$this->_table] = 'user_id';
      }
 
      public function get_by_pdo_query() {  //good without param

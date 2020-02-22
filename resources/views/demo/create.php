@@ -2,13 +2,19 @@
 <a href="<?php echo URL?>demo">List</a>
 <br /><br />
 
-<?php if(session('notification_type')):?>
+<?php
+if(session('notification_type')):?>
     <p class="btn text-danger">
         <?php echo session('notification_message'); ?>
     </p>
 <?php endif;
     //reset it after displaying
     session('notification_type',[]);
+
+    // if there is no error give a scope to print old values
+    if (!$errors) {
+        $inputs = [];
+    }
 ?>
 
 <form action="<?php echo URL?>demo/save" method="post" enctype="multipart/form-data">
