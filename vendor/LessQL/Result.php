@@ -144,6 +144,7 @@ class Result implements \IteratorAggregate, \JsonSerializable
                 'expr' => $this->select,
                 'where' => $this->where,
                 'orderBy' => $this->orderBy,
+                'groupBy' => $this->groupBy,
                 'limitCount' => $this->limitCount,
                 'limitOffset' => $this->limitOffset,
                 'params' => $this->whereParams
@@ -532,6 +533,27 @@ class Result implements \IteratorAggregate, \JsonSerializable
         return $clone;
     }
 
+    public function groupBy( $column ) {
+
+        if ($this->parent_) {
+            throw new \LogicException( 'Cannot group referenced result' );
+        }
+
+        $clone = clone $this;
+
+        if ( !is_array( $column ) ) {
+            $params = func_get_args();
+        } else {
+            $params = $column;
+        }
+
+        foreach($params as $group){
+            $clone->groupBy[] = $this->db->quoteIdentifier($group);
+        }
+
+        return $clone;
+    }
+
     /**
      * Set a result limit and optionally an offset
      *
@@ -629,6 +651,7 @@ class Result implements \IteratorAggregate, \JsonSerializable
             'expr' => $function,
             'where' => $this->where,
             'orderBy' => $this->orderBy,
+            'groupBy' => $this->groupBy,
             'limitCount' => $this->limitCount,
             'limitOffset' => $this->limitOffset,
             'params' => $this->whereParams
@@ -665,6 +688,7 @@ class Result implements \IteratorAggregate, \JsonSerializable
             'where' => $this->where,
             'whereParams' => $this->whereParams,
             'orderBy' => $this->orderBy,
+            'groupBy' => $this->groupBy,
             'limitCount' => $this->limitCount,
             'limitOffset' => $this->limitOffset
         ));
@@ -726,6 +750,9 @@ class Result implements \IteratorAggregate, \JsonSerializable
 
     /** @var array */
     protected $orderBy = array();
+
+    /** @var array */
+    protected $groupBy = array();
 
     /** @var null|int */
     protected $limitCount;
