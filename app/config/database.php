@@ -4,9 +4,13 @@
  * Configuration for: Database
  * This is the place where you define your database credentials, database type etc.
  */
-define('DB_TYPE', 'mysql');
-define('DB_HOST', '127.0.0.1');
-define('DB_NAME', 'address_db');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_CHARSET', 'utf8');
+return [
+    'DB_TYPE' => 'mysql',
+    'DB_HOST' => '127.0.0.1',
+    'DB_NAME' => 'address_db',
+    'DB_USER' => 'root',
+    'DB_PASS' => '',
+    'DB_CHARSET' => 'utf8',
+    'DB_COLLATE' => 'utf8_general_ci',
+    'DB_PERSISTENT' => [\PDO::ATTR_PERSISTENT=> false]
+];

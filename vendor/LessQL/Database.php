@@ -16,6 +16,7 @@ class Database
         // required for safety
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->pdo = $pdo;
+        //myLog(json_encode($this->pdo));
         //require 'vendor/LessQL/Result.php';
         //require 'vendor/LessQL/Row.php';
     }

@@ -2,24 +2,12 @@
 
 namespace App\Controllers;
 
-use App\library\Upload;
-use App\Models\Demo;
-use App\Models\Model;
+use App\Models\Address;
 use Vendor\Valitron\Validator;
+//use App\Models\ModelMysqli;
 
 class DemoController extends Controller {
-    /**
-     * @var Upload
-     */
-    private $upload;
-    /**
-     * @var Model
-     */
-    private $model;
-    /**
-     * @var Demo
-     */
-    private $demo;
+    private $address;
 
     /**
      * Create a new controller instance.
@@ -27,9 +15,7 @@ class DemoController extends Controller {
      * @return void
      */
     public function __construct() {
-        $this->demo = new Demo();
-        $this->model = new Model();
-        $this->upload = new Upload();
+        $this->address = new Address();
     }
 
 
@@ -40,47 +26,46 @@ class DemoController extends Controller {
      */
     public function index() {
         //1. query through pdo object from model
-        //$rs = $this->demo->get_by_pdo_query()->fetchAll();
+        //$rs = $this->address->get_by_pdo_query()->fetchAll();
         // prepare through pdo object from model
-        //$rs = $this->demo->get_by_pdo_prepare([5]);
+        //$rs = $this->address->get_by_pdo_prepare([5]);
 
         //2. get data from base model
-        //$rs = $this->demo->select("demo_book")->fetch();
-        //$rs = $this->demo->select("demo_book",["expr"=>["id","name"]])->fetch();
-        //$rs = $this->demo->table("demo_book")->fetch()->jsonSerialize();
+        //$rs = $this->address->select("address_book")->fetch();
+        //$rs = $this->address->select("address_book",["expr"=>["id","name"]])->fetch();
+        //$rs = $this->address->table("address_book")->fetch()->jsonSerialize();
 
         //3. get data from base model with select
-        //$rs = $this->demo->table("demo_book")->select("id,name")->fetch()->jsonSerialize();
+        //$rs = $this->address->table("address_book")->select("id,name")->fetch()->jsonSerialize();
 
-        //4. find by primary key column
-        //$rs = $this->demo->table("demo_book",5)->fetch();
-        //dd($rs);
+        //4. find by id
+        //$rs = $this->address->table("address_book",5)->jsonSerialize();
 
         //5. query with where
-        //$rs = $this->demo->table("demo_book")->where("id",7)->fetch();
-        //$rs = $this->demo->table("demo_book")->where("id",[5,7])->fetchAll();
-        //$rs = $this->demo->table("demo_book")->whereNot("id",[5,7])->fetchAll();
+        //$rs = $this->address->table("address_book")->where("user_id",7)->fetch();
+        //$rs = $this->address->table("address_book")->where("user_id",[5,7])->fetchAll();
+        //$rs = $this->address->table("address_book")->whereNot("user_id",[5,7])->fetchAll();
 
         //6. Order by
-        //$rs = $this->demo->table("demo_book")->orderBy("id","DESC")->fetchAll();
+        //$rs = $this->address->table("address_book")->orderBy("id","DESC")->fetchAll();
 
         //7. limit result
-        //$rs = $this->demo->table("demo_book")->limit(2,2)->fetchAll();
+        //$rs = $this->address->table("address_book")->limit(2,2)->fetchAll();
 
         // 8. pge
-        //$rs = $this->demo->table("demo_book")->paged(2,2);
+        //$rs = $this->address->table("address_book")->paged(2,2);
 
         //9. aggregate methods
-        //$rs = $this->demo->table("demo_book")->count();
-        //$rs = $this->demo->table("demo_book")->min("id");
-        //$rs = $this->demo->table("demo_book")->sum("id");
+        //$rs = $this->address->table("address_book")->count();
+        //$rs = $this->address->table("address_book")->min("id");
+        //$rs = $this->address->table("address_book")->sum("id");
 
         //10. Insert single row or multiple rows
         $row = [
             "name" => "user2",
             "firstname" => "user firstname"
         ];
-        //$rs = $this->demo->table("demo_book")->insert($row);
+        //$rs = $this->address->table("address_book")->insert($row);
         $rows = [
             [
                 "name" => "user2",
@@ -91,46 +76,42 @@ class DemoController extends Controller {
                 "firstname" => "user firstname 3"
             ]
         ];
-        //$rs = $this->demo->table("demo_book")->insert($row); normal query
-        //$rs = $this->demo->table("demo_book")->insert($rows,'prepared'); // "prepared" query best
-
-        // for security reason
-        //$rs = $this->demo->table("demo_book")->insert($rows,'batch'); // normal insert with batch
-
-        //last insert id after single row insertion
-        //$last_insert_id = $this->demo->lastInsertId());
+        //$rs = $this->address->table("address_book")->insert($row); normal query
+        //$rs = $this->address->table("address_book")->insert($rows,'prepared'); // "prepared" query best
+                // for security reason
+        //$rs = $this->address->table("address_book")->insert($rows,'batch'); // normal insert with batch
 
         //11. UPDATE, Delete
         $row = [
-            "id" => 16,
+            "user_id" => 16,
             "name" => 16,
             "city" => "Dhaka"
         ];
-        //$rs = $this->demo->table("demo_book",15)->update($row);
+        //$rs = $this->address->table("address_book",15)->update($row);
         //delete
-        //$rs = $this->demo->table("demo_book",19)->delete();
+        //$rs = $this->address->table("address_book",19)->delete();
 
         //Transaction:
         /*
-            $this->demo->begin();
-            $this->demo->commit();
-            $this->demo->rollback();
+            $this->address->begin();
+            $this->address->commit();
+            $this->address->rollback();
         */
 
         //12. CRUD with properties
         //update old data using save
-        /*$row = $this->demo->table("demo_book",17);
+        /*$row = $this->address->table("address_book",17);
         dump($row);
         $row->city = "Barishal";
         $row->save();*/
 
         // update
-        /*$row = $this->demo->table("demo_book",17);
-        $row->update(["id"=>120]);*/
+        /*$row = $this->address->table("address_book",17);
+        $row->update(["user_id"=>120]);*/
 
         // create row from scratch, if exists then update
         /*$properties = ["name"=>'user20',"firstname"=>'',"city"=>''];
-        $row = $this->demo->createRow("demo_book", $properties );
+        $row = $this->address->createRow("address_book", $properties );
         $row->city = "Khulna";
         $row->save();*/
         //$row->exists
@@ -138,22 +119,30 @@ class DemoController extends Controller {
         //dd($row);
         //dd($rs);
 
-        //$rs = $this->demo->demo_book()->select("id","name","id")->where("id",5)->fetch();//->jsonSerialize();
+        //$rs = $this->address->address_book()->select("id","name","user_id")->where("id",5)->fetch();//->jsonSerialize();
         //dump($rs->user()->fetch()->jsonSerialize());
 
-        //$rs = $this->demo->demo_book()->select("id","name")->fetchAll();
+        //$rs = $this->address->address_book()->select("id","name")->fetchAll();
         //dump($rs);
 
-        /*$rs = $this->demo->demo_book()->paged(2,1); // paginate limit 2, offset 1
+        /*$rs = $this->address->address_book()->paged(2,1); // paginate limit 2, offset 1
         foreach ($rs as $user) {
             $author = $user->user()->fetch();
-            // demo_book relation with user table with id on demo_book foreign key column with id pk on user.
+            // address_book relation with user table with user_id on address_book foreign key column with id pk on user.
             dump($author->jsonSerialize());
         }*/
 
-        $address_books = $this->demo->table("demo_book")->fetchAll();
-        $title = "Demo book List";
-        return view('demo/index',['address_books'=>$address_books,'title'=>$title],true);
+        //dd($this->employee->select('month_wise_salary_info',['expr'=>'FromDate,EmployeeCode,count(*) as d','groupBy'=>['FromDate']])->fetchAll());
+        //dd($this->employee->select('month_wise_salary_info',['expr'=>'FromDate,EmployeeCode','where'=>['EmployeeID=3']])->fetch());
+        //dd($this->employee->select('month_wise_salary_info',['expr'=>'FromDate,EmployeeCode'])->fetch());
+        //dd($this->employee->select('month_wise_salary_info')->fetch());
+        //return $this->employee->delete('tmp_device_row_data',["WorkDate>='2020-11-01'","WorkDate<='2020-11-05'","PunchType IN(0,1)"]);
+        //$leave_data = $this->employee->select('emp_leave_transaction_approved',['expr'=>'GROUP_CONCAT(id)', 'where'=>["FromDate>='2020-12-01' AND ToDate<='2020-12-05'"]]);
+        //$leave_data = $this->employee->select('emp_leave_transaction_approved',['expr'=>'*', 'where'=>["FromDate>='2020-12-01' AND ToDate<='2020-12-05'"]])->rowCount();
+
+        $address = $this->address->table("address_book")->fetchAll();
+        $title = "Address List";
+        return view('demo/index',['address'=>$address,'title'=>$title]);
     }
 
 
@@ -163,8 +152,8 @@ class DemoController extends Controller {
      * @return View
      */
     public function create() {
-        $title = "Demo New";
-        return view('demo/create',['title'=>$title],true);
+      $title = "Address New";
+        return view('demo/create',['title'=>$title]);
     }
 
 
@@ -180,63 +169,32 @@ class DemoController extends Controller {
         $v->rule('lengthBetween', 'name', 5, 50);
         $v->rule('lengthBetween', 'firstname', 5, 50);
         $v->rule('email', 'email');
-
-        //make sure we have no error
-        if ($this->upload->fileExists('image')) {
-            $v->rule('in', 'image.error', [0])->message('No image selected for {field}');
-            $v->rule('in', 'image.type', ['image/jpeg'])->message('Only jpg image is allowed for {field}.');
-            $v->rule('max', 'image.size', 300*1024)->message('Max size is 300kb for {field}.');
-        }
         if($v->validate()) {
-            $name = ($_POST['name']);
-            $firstname = ($_POST['firstname']);
-            $street = ($_POST['street']);
-            $zip_code = ($_POST['zip_code']);
-            $city = ($_POST['city']);
-            //$sql = "INSERT INTO demo_book(name,firstname,street,zip_code,city) VALUES('$name','$firstname','$street','$zip_code','$city')";
+            $name = validation($_POST['name']);
+            $firstname = validation($_POST['firstname']);
+            $street = validation($_POST['street']);
+            $zip_code = validation($_POST['zip_code']);
+            $city = validation($_POST['city']);
+            //$sql = "INSERT INTO address_book(name,firstname,street,zip_code,city) VALUES('$name','$firstname','$street','$zip_code','$city')";
             //$this->model->query($sql);
             //echo "Error: " . $sql . "<br>" . $this->model->error;
-
-            // name is a unique column, we are checking is it exists
             $data = [
-                'name'=>$name
+                'name'=>$name,
+                'firstname'=>$firstname,
+                'street'=>$street,
+                'zip_code'=>$zip_code,
+                'city'=>$city
             ];
-            if (!$this->demo->table('demo_book')->where($data)->count()) {
-                $data = [
-                    'firstname'=>$firstname,
-                    'street'=>$street,
-                    'zip_code'=>$zip_code,
-                    'city'=>$city
-                ];
-                if ($this->upload->fileExists('image')) {
-                    $image = $this->upload->make('image');
-                    $image_file_name = time() .  '.jpg';
-                    $image->save(upload_path('images/' . $image_file_name));
-
-                    $data['image'] = $image_file_name;
-                }
-                $rs = $this->demo->table("demo_book")->insert($data);//->fetch();
-                //myLog("last insert id:".json_encode($this->demo->lastInsertId()));
-                dd($rs);
-                if($rs) {
-                    notification(['type'=>'success', 'message'=>'Created Successfully']);
-                }
-                else {
-                    $errors = $rs->errorInfo();
-                }
-            } else {
-                $errors = [
-                    'name' => ['User name is already exists.']
-                ];
+            $rs = $this->address->table("address_book")->insert($data);
+            if($rs) {
+               return redirect('demo');
+            }
+            else {
+                $rs->errorInfo();
             }
         } else {
-            $errors = $v->errors();
+            return view('demo/create',['title'=>'Address Add','errors'=>$v->errors()]);
         }
-        $with = [
-            'errors' => $errors ?: '',
-            'inputs' => $_REQUEST
-        ];
-        return redirect('demo/add',['with'=>$with]);
     }
 
     /**
@@ -246,15 +204,15 @@ class DemoController extends Controller {
      * @return View
      */
     public function edit($id=null) {
-        //$sql = "SELECT * FROM demo_book WHERE id=".($id);
+        //$sql = "SELECT * FROM address_book WHERE id=".validation($id);
         //$row = $this->model->query($sql)->rows();
-        $book = $this->demo->table("demo_book",$id);
-        if(!empty($book)) {
-            return view('demo/edit',compact('title','book'));
+        $row = $this->address->table("address_book",$id);
+        if(!empty($row)){
+          $title = "BookController Edit";
+          return view('demo/edit',['book'=>$row,'title'=>$title]);
         }
         else
-            session('errors',"Not found.");
-        return redirect('demo/edit/'.$id);
+          echo 'Data not found.';
     }
 
 
@@ -265,15 +223,15 @@ class DemoController extends Controller {
      * @return View
      */
     public function show($id=null) {
-        //$sql = "SELECT * FROM demo_book WHERE id=".($id);
+        //$sql = "SELECT * FROM address_book WHERE id=".validation($id);
         //$row = $this->model->query($sql)->rows();
-        $book = $this->demo->table("demo_book",$id);
-        if(!empty($book)) {
-            return view('demo/show',compact('title','book'));
+        $row = $this->address->table("address_book",$id);
+        if(!empty($row)){
+            $title = "BookController Show";
+            return view('demo/show',['book'=>$row,'title'=>$title]);
         }
         else
-            session('errors',"Not found.");
-        return redirect('demo/show/'.$id);
+            echo 'Data not found.';
     }
 
 
@@ -283,73 +241,36 @@ class DemoController extends Controller {
      * @param  int  $id
      * @return View
      */
-    public function update($id=null)
-    {
-        $inputs = $_POST;
-        $v = new Validator($inputs);
-        $v->rule('required', ['name', 'firstname']);
-
-        //make sure we have no error
-        if ($this->upload->fileExists('image')) {
-            $v->rule('in', 'image.error', [0])->message('No image selected for {field}');
-            $v->rule('in', 'image.type', ['image/jpeg'])->message('Only jpg image is allowed for {field}.');
-            $v->rule('max', 'image.size', 300*1024)->message('Max size is 300kb for {field}.');
-        }
-
-        if ($v->validate()) {
+    public function update($id=null) {
+        if(isset($id)){
             $name = validation($_POST['name']);
             $firstname = validation($_POST['firstname']);
-            $street = validation($_POST['street']) ?? null;
-            $zip_code = validation($_POST['zip_code']) ?? null;
-            $city = validation($_POST['city']) ?? null;
-            //$sql = "UPDATE demo_book SET name='$name',firstname='$firstname',street='$street',zip_code='$zip_code',city='$city' WHERE id='$id'";
+            $street = validation($_POST['street']);
+            $zip_code = validation($_POST['zip_code']);
+            $city = validation($_POST['city']);
+            //$sql = "UPDATE address_book SET name='$name',firstname='$firstname',street='$street',zip_code='$zip_code',city='$city' WHERE id='$id'";
             //$this->model->query($sql);
+            //$this->route('demo/index');
             $data = [
-                'name' => $name
+                'name'=>$name,
+                'firstname'=>$firstname,
+                'street'=>$street,
+                'zip_code'=>$zip_code,
+                'city'=>$city
             ];
-            $book = $this->demo->table('demo_book')->where($data);
-            if (!$book->whereNot('id',$id)->count()) {
-                $data = [
-                    'firstname' => $firstname,
-                    'street' => $street,
-                    'zip_code' => $zip_code,
-                    'city' => $city
-                ];
-
-                $path = "images/";
-                if ($this->upload->fileExists('image')) {
-                    $image = $this->upload->make('image');
-                    $image_file_name = time() .  '.jpg';
-                    $image->save(upload_path('images/' . $image_file_name));
-
-                    $data['image'] = $image_file_name;
-                    //remove old image first
-                    if(file_exists($path.$image_file_name)) {
-                        unlink($path.$image_file_name);
-                    }
-                }
-                //$row = $this->model->table('demo_book',$id);
-                $rs = $book->update($data, 'prepared');
-                if($rs) {
-                    notification(['type'=>'success', 'message'=>'Updated Successfully']);
-                }
-                else {
-                    $errors = $rs->errorInfo();
-                }
-            }
-            else {
-                $errors = [
-                    'name' => ['User name is already exists.']
-                ];
-            }
-        } else {
-            $errors = $v->errors();
+            $row = $this->address->table("address_book",$id);
+            $row->update($data);
+            notification(['type'=>'success', 'message'=>'Updated Successfully']);
+            return redirect('demo');
+            /*if($this->model->query($sql)->status())
+                $this->route('demo/index');
+            else
+                echo "Error: on " . $sql;*/
         }
-        $with = [
-            'errors' => $errors ?? ''
-        ];
-        return redirect('demo/edit/' . $id,['with'=>$with]);
+        else
+            echo 'Update id not found.';
     }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -357,44 +278,39 @@ class DemoController extends Controller {
      * @return View
      */
     public function destroy($id=null) {
-        if($id) {
-            //$sql = "DELETE FROM demo_book WHERE id='$id' LIMIT 1";
-            //$this->model->query($sql)
-            $demo = $this->demo->table("demo_book",$id)->delete();
-            if($demo) {
-                notification(['type'=>'success', 'message'=>'Deleted Successfully']);
-            }
-            else {
-                $errors = $demo->errorInfo();
-            }
-        }
-        else {
-            $errors = ['Update id not found.'];
-        }
-        $with = [
-            'errors' => $errors ?: ''
-        ];
-        return redirect('demo',['with'=>$with]);
+      if(isset($id)) {
+          //$sql = "DELETE FROM address_book WHERE id='$id' LIMIT 1";
+          //$this->model->query($sql);
+          $row = $this->address->table("address_book",$id)->delete();
+          if($row) {
+              return redirect('demo');
+          }
+          else
+            echo "Error: on " . $row->errorInfo();
+      }
+      else
+          echo 'Update id not found.';
     }
 
     public function export_xml() {
-        $title = "xml page";
-      $sql = "SELECT * FROM demo_book";
-      $demo = $this->model->query($sql)->result();
+      $sql = "SELECT * FROM address_book";
+      $address = $this->model->query($sql)->result();
       //$this->view('demo/xml',['demo'=>$demo]);
-      //require(View.'demo/xml.php');
-      return view('demo/xml',['demo'=>$demo,'title'=>$title],false);
+      require(View.'demo/xml.php');
     }
 
     public function status($id=null,$status=null) {
         echo $status.'<br />';
         dd($id);
     }
-
     public function demo() {
-        //$demo = $this->model->query("SELECT * FROM demo_book")->result();
-        $demo = $this->demo->table("demo_book")->fetchAll();
-        $title = "Demo List";
-        return view('demo/demo',['demo'=>$demo,'title'=>$title],true);
+        //$address = $this->model->query("SELECT * FROM address_book")->result();
+        $address = $this->address->table("address_book")->fetchAll();
+        $title = "Address List";
+        return view('demo/demo',['demo'=>$address,'title'=>$title]);
+    }
+
+    private function validation($name)
+    {
     }
 }

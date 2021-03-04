@@ -535,24 +535,24 @@ class Result implements \IteratorAggregate, \JsonSerializable
 
     public function groupBy( $column ) {
 
-        if ($this->parent_) {
-            throw new \LogicException( 'Cannot group referenced result' );
-        }
-
-        $clone = clone $this;
-
-        if ( !is_array( $column ) ) {
-            $params = func_get_args();
-        } else {
-            $params = $column;
-        }
-
-        foreach($params as $group){
-            $clone->groupBy[] = $this->db->quoteIdentifier($group);
-        }
-
-        return $clone;
+    if ($this->parent_) {
+        throw new \LogicException( 'Cannot group referenced result' );
     }
+
+    $clone = clone $this;
+
+    if ( !is_array( $column ) ) {
+        $params = func_get_args();
+    } else {
+        $params = $column;
+    }
+
+    foreach($params as $group){
+        $clone->groupBy[] = $this->db->quoteIdentifier($group);
+    }
+
+    return $clone;
+}
 
     /**
      * Set a result limit and optionally an offset

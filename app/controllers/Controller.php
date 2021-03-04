@@ -3,7 +3,7 @@
 namespace App\Controllers;
 use LessQL\Database;
 class Controller {
-    public $input;
+    //public $input;
     public function __construct() {
         if (!auth()) {
             redirect('auth/login');
@@ -20,7 +20,8 @@ class Controller {
             }
         }
     }
-    /*public function setJson($data){
+
+    public function setJson($data){
         return json_encode($data);
-    }*/
+    }
 }

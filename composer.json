@@ -1,6 +1,6 @@
 {
     "name": "kabircse/sage",
-    "description": "This is a MVC based lightweight,fast php framework",
+    "description": "This is a MVC based project",
     "type": "project",
     "license": "MIT",
     "authors": [
@@ -18,6 +18,16 @@
         },
         "files": [
             "app/helpers/functions.php"
+        ]
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "chgrp -R www-data storage storage/logs",
+            "chmod -R ug+rwx storage storage/logs",
+            "chgrp -R www-data storage storage/sessions",
+            "chmod -R ug+rwx storage storage/sessions",
+            "chgrp -R www-data public/assets/uploads/images",
+            "chmod -R ug+rwx public/assets/uploads/images"
         ]
     }
 }

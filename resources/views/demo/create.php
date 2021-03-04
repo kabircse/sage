@@ -2,6 +2,7 @@
 <a href="<?php echo URL?>demo">List</a>
 <br /><br />
 
+<!--No need this notification because it is working form footer-->
 <?php if(session('notification_type')):?>
     <p class="btn text-danger">
         <?php echo session('notification_message'); ?>

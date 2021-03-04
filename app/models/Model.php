@@ -5,19 +5,20 @@ namespace App\Models;
 use Vendor\LessQL\Database;
 
 class Model extends Database {
-    //protected $db;
+
     protected $pdo;
+    public static $pdo_instance;
     public function __construct() {
-        $dsn = 'mysql:dbname='.DB_NAME.';host='.DB_HOST;
+        $db = require App.'config/database.php';
+        $dsn = $db['DB_TYPE'].':dbname='.$db['DB_NAME'].'; host='.$db['DB_HOST'].'; charset='.$db['DB_CHARSET'];
         try {
-            $this->pdo = new \PDO($dsn,DB_USER,DB_PASS);
-            parent::__construct($this->pdo);
+            if (!isset(self::$pdo_instance)) {
+                self::$pdo_instance = new \PDO($dsn, $db['DB_USER'], $db['DB_PASS'], $db['DB_PERSISTENT']);
+            }
+            $this->pdo = self::$pdo_instance;
         } catch (\PDOException $e) {
-            //throw new \PDOException($e->getMessage(), (int)$e->getCode());
+            throw new \PDOException($e->getMessage(), (int)$e->getCode());
             exit("Error:".$e->getMessage(). ". Code:".$e->getCode());
         }
     }
-    /*public function fill() {
-        return $this->fillable;
-    }*/
 }

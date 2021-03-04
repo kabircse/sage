@@ -5,8 +5,8 @@
 #### Installation:
    * ###### Server Requirements:              
         The Sage framework has a few system requirements. All of these requirements are given below:
-        
-        
+     
+
         PHP >= 7.2.0
         BCMath PHP Extension
         Ctype PHP Extension
@@ -24,20 +24,20 @@
            composer create-project kabircse/sage:1.0.x-dev
            
 
-  After install setup your databaes to /config/database.php.
-  If you get any problem with file missing/autoload, then run this command in you project folder using a command:
+  After install set up your database to /config/database.php.
+  If you get any problem with file missing/autoload, then run this command in you project a folder using a command:
     
             composer update -no-dev -o
-  There also exist a demo database to   db/demo_book.sql, Using this database you can use the demo controller,model with demo views
+  There also exist a demo database to   db/address_book.sql, Using this database you can use the demo controller,model with demo views
 #### Route:
-At first you have to create a a route in web.php with http GET,POST methods.
+At first, you have to create a route in web.php with http GET,POST methods.
 Ex:
 
     $router->map('GET','/', 'DemoController@index','demo');
-This routes show the data from the index() methods of DemoController. We can also call this method using route name defined as demo.
+These routes show the data from the index() methods of DemoController. We can also call this method using route name defined as demo.
 * The first parameter shows the http methods.
 * The second parameter shows the url of your resources.
-* The third parameter shows the your file/controller.
+* The third parameter shows the file/controller.
 * The fourth parameter shows the route name
 
 ### Controller:
@@ -80,12 +80,13 @@ We created a controller named as DemoController as
                 $rs = $this->address->get_by_pdo_query()->fetchAll();
                 //prepare through pdo object from model
                 $rs = $this->address->get_by_pdo_prepare([5]);
+                return view('demo/index',['address'=>$rs]);
             }
     ?>
     
 ### Model:
 For using model you have to create a model class to app/models path extending BaseModel class.
-There are several ways to access data from database, you can use separate model or you can use base model directly in your controller creating an instance of base model. 
+There are several ways to access data from a database, you can use separate model, or you can use base model directly in your controller creating an instance of base model. 
 
 #### Using Custom model: 
 We are using Address model class to our above controller. Access data from the address table using address model class.
@@ -96,7 +97,12 @@ We are using Address model class to our above controller. Access data from the a
 
                 // for single row
                 $rs = $this->address->select("address_book")->fetch();
-                            
+
+                // for single row with table name as alias
+                $rs = $this->address->address_book()->select("id,name")->fetch();
+
+                // for all rows with specifi column
+               $rs = $this->address->address_book()->select('roles',['expr'=>'id,title'])->fetchAll(); 
                 
                 // for all rows
                 $rs = $this->address->select("address_book")->fetchAll();
@@ -124,7 +130,7 @@ We are using Address model class to our above controller. Access data from the a
                 // limit result with offset
                 $rs = $this->address->table("address_book")->limit(2,2)->fetchAll();
         
-                // using pge
+                // using page
                 $rs = $this->address->table("address_book")->paged(2,2);
         
                 // aggregate methods
@@ -157,7 +163,7 @@ We are using Address model class to our above controller. Access data from the a
                         // for security reason
                 //$rs = $this->address->table("address_book")->insert($rows,'batch'); // normal insert with batch
                 
-#######3. Create,save:
+#######3. Create, Save:
 
                   // create row from scratch, if exists then update
                  $properties = ["name"=>'user20',"firstname"=>'',"city"=>''];
@@ -188,10 +194,11 @@ and can access a table data using the instance of the Model as**
 ### Helper functions:
 There are several helper functions. These are given below:
 
-**1. view($parm1,$parm2,$parm3)** : for include your page on the controller. The view() helper has 3 parameters.
-
+**1. view($parm1,$parm2,$parm3)** : 
+for include your page on the controller. The view() helper has 3 parameters.
 
     return view('demo/create',['title'=>$title],false);
+
 The first parameter is the page to include here from resources/view/demo/create.php
 The second parameter is the array of your data needs according to your demand for create.php page,
 The third parameter is the boolean status for loading the template or not.
@@ -248,31 +255,36 @@ For uploading a file to public/assets/uploads path.
         2. dd()
         
 **10. Form**
-    There are most common form field creation.
+    There are the most common form field creation.
     
           
-  ##### #Form input:  form_input('field_name','field_type','value','custom_attributes')  
-  1. First parameter is the name of the field.  
-  2. Second parameter is the type of input field(text,email etc ..)  
-  3. Third parameter is the value, you can use to retrieve the previous value using old() functions  
-  4. Fourth parameter is the other attributes as string
+  ##### # Form input:
+
+    form_input('field_name','field_type','value','custom_attributes')
+  1. The first parameter is the name of the field.  
+  2. The second parameter is the type of input field(text,email etc .)  
+  3. The third parameter is the value, you can use to retrieve the previous value using old() functions  
+  4. The fourth parameter is the other attributes as string
    
          echo form_input('name','text',old($inputs,'name'),'class="form-control form-control-sm" id="name" placeholder="Type name" required');
           
-  ###### #Form Textarea:  form_textarea('field_name','value','custom_attributes')
-  1. First parameter is the name of the field.    
-  2. Third parameter is the value, you can use to retrieve the previous value using old($inputs,'name') functions,
-  for showing previous value you have to add with parameter to route(). see route section.  
-  3. Fourth parameter is the other attributes as string
-       
-   
-        echo form_textarea('Description',null,$attribute='class="form-control" rows="2" placeholder="Type Descriptions" id="Description"');
+  ###### # Form Textarea:  
 
-###### #Form Select:  form_select('field_name','items_array','selected_item','custom_attributes')
-  1. First parameter is the name of the field.    
-  2. Second parameter is the values of items in array  
-  3. Third paramter is the selected items value
-  3. Fourth parameter is the other attributes as string
+    form_textarea('field_name','value','custom_attributes')
+  1. The first parameter is the name of the field.    
+  2. The third parameter is the value, you can use to retrieve the previous value using old($inputs,'name') functions,
+  for showing previous value you have to add with a parameter to route(). see route section.  
+  3. The fourth parameter is the other attributes as string
+
+    echo form_textarea('Description',null,$attribute='class="form-control" rows="2" placeholder="Type Descriptions" id="Description"');
+
+###### # Form Select:  
+
+    form_select('field_name','items_array','selected_item','custom_attributes')
+  1. The first parameter is the name of the field.    
+  2. The second parameter is the values of items in array  
+  3. The third parameter is the selected items value
+  3. The fourth parameter is the other attributes as string
        
    
         echo form_select('SelectId[]',$select_array,null,'class="input-sm p-1 selectId"');        
@@ -316,7 +328,12 @@ For uploading a file to public/assets/uploads path.
         <?php endif;?>
         
    #### Notification:     
+  For using this message you have to pass , your message as form controller: 
+  
+    notification(['type'=>'success', 'message'=>'Created Successfully']);       
+
 For form submission wrong/success, you can show a message as:
+
         <?php if(session('notification_type')):?>
             <p class="btn text-danger">
                 <?php echo session('notification_message'); ?>
@@ -325,16 +342,16 @@ For form submission wrong/success, you can show a message as:
             //reset it after displaying
             session('notification_type',[]);
         ?>    
-  For using this message you have to pass , your message as form controller: 
-  
-                    notification(['type'=>'success', 'message'=>'Created Successfully']);       
-        
+  Another way,
+  we can just load the notificatin.php with toastr js message presenter to footer.
+
+
 ### Template:
-There is not templating engine, we are using just php tag. We used a master page for loading all pages named at master.php to
+There is no templating engine, we are using just php tag. We used a master page for loading all pages named at master.php to
     
      /resources/views/master.php. 
-We are loading othe page to master.php from
-footer,header and sidebar page on 
+We are loading other page to master.php from
+a footer,header and sidebar page on 
     
     /resources/views/template.
 Your can separate this structure according to your needs.
@@ -345,7 +362,7 @@ For logging your errors you can use myLog(), it will create a log on /storage/lo
         myLog("That is working"):                
 
 ### Session:
-There are session for working with your applications.
+There are a session for working with your applications.
 
 ######1. Create: session('key','value')
 
@@ -375,7 +392,7 @@ You can upload file as
     }
     
 Image file validation:
-You can image file validated using validator check on form validation section.
+You can validate an image file using validator check on form validation section.
     
         if ($this->upload->fileExists('EmployeePhoto')) {
             $v->rule('in', 'EmployeePhoto.error', [0])->message('No image selected for {field}');

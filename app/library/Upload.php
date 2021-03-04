@@ -47,7 +47,7 @@ class Upload
      * @return bool
      */
     public function fileExists($fileName){
-        if(isset($_FILES[$fileName]) && $_FILES[$fileName]['error']!=UPLOAD_ERR_NO_FILE){
+        if(isset($_FILES[$fileName]) && $_FILES[$fileName]['error'] != UPLOAD_ERR_NO_FILE){
             return true;
         }
         return;

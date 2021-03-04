@@ -1,5 +1,10 @@
 <?php
 /**
+ * This helper is loading function's currently for the application.
+ * It would be better, If we can separate this files to class with related features, after completing a project.
+ */
+
+/**
  *  get route path of an url.
  *
  * @param string $url
@@ -57,11 +62,10 @@ if (!function_exists('with')) {
  * @return page
  */
 if (!function_exists('view')) {
-    function view($page = null, $data = [], $master = true)
+    function view($content = null, $data = [], $master = true)
     {
-        extract($data);
         // if master false then open page without master.php(header,footer)
-        $view = ($master == true) ? 'master.php' : $page.'.php';
+        $view = ($master == true) ? 'master.php' : $content.'.php';
 
         //for displaying errors, dump $errors variable
         $errors = $errors ?? session('errors');
@@ -72,6 +76,9 @@ if (!function_exists('view')) {
         session('errors',[]);
         session('inputs',[]);
         //dd(session('errors'));
+
+        //extract data sent from controller
+        extract($data);
         require(View . $view);
     }
 }
@@ -113,7 +120,6 @@ if (!function_exists('url_encode')) {
     }
 }
 
-
 /**
  * get dump data with page block
  *
@@ -124,6 +130,19 @@ if (!function_exists('url_decode')) {
     function url_decode($input)
     {
         return base64_decode(strtr($input, '-_,', '+/='));
+    }
+}
+
+/**
+ * get dump data with page block
+ *
+ * @param array $data
+ * @return data with page die
+ */
+if (!function_exists('str_slug')) {
+    function str_slug($input)
+    {
+        return preg_replace('/[^A-Za-z0-9]+/','-',$input);
     }
 }
 
@@ -167,17 +186,17 @@ if (!function_exists('dump')) {
  * @return requested field values
  */
 if (!function_exists('old')) {
-    function old($inputs,$var=null)
+    function old($inputs=[],$var=null)
     {
-        //myLog("session('inputs')):".json_encode(session('inputs')));
-        if(is_string($var) && is_array($inputs)) {
-            return array_key_exists($var,$inputs)? $inputs[$var]:null;
+        //myLog("session('inputs')):".json_encode(session('inputs')[$var]));
+        if(is_string($var) && array_key_exists($var,$inputs)) {
+            return $inputs[$var];
         }
         return false;
     }
 }
 
-//<br /><b>Warning</b>:  array_key_exists() expects parameter 2 to be array, string given in <b>E:\xampp-7\htdocs\sage\app\helpers\functions.php</b> on line <b>173</b><br />
+
 /**
  * get populate input values
  *
@@ -187,11 +206,47 @@ if (!function_exists('old')) {
 if (!function_exists('validation')) {
     function validation($input = null)
     {
+        if (!is_string($input))
+            return $input;
+
         $input = trim($input);
         $input = stripslashes($input);
+        $input = htmlspecialchars($input);
         return $input;
     }
 }
+
+/**
+ * set session for a key with value
+ *
+ * @param mix[string,array] $key
+ * @param mix $val
+ * @param time $expire in minute, default 5 minutes
+ * @param boolean $security, true for https
+ * @return cookie
+ *
+ */
+if (!function_exists('cookie')) {
+    function cookie($key=null, $val=null, $expire = 5, $security = false)
+    {
+        $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
+        $path = '/';
+
+        if(is_array($key)) {
+            foreach ($key as $item=>$val) {
+                setcookie($item, $val, time() + 60 * $expire, $path, $domain, $security);
+            }
+        }
+        elseif(isset($key) && isset($val)) {
+            return setcookie($key, $val, time() + 60 * $expire, $path, $domain, $security);
+        }
+        elseif(isset($key)) {
+            return $_COOKIE[$key] ?? '';
+        }
+        return;
+    }
+}
+
 /**
  * set session for a key with value
  *
@@ -204,9 +259,9 @@ if (!function_exists('session')) {
     function session($key=null,$val=null)
     {
         if(is_array($key)){
-            foreach ($key as $item=>$val){
-                $_SESSION[$item] = $val;
-            }
+             foreach ($key as $item=>$val){
+                 $_SESSION[$item] = $val;
+             }
         }
         else if(isset($key) && isset($val)){
             return $_SESSION[$key] = $val;
@@ -260,10 +315,10 @@ if (!function_exists('session_get')) {
  *
  */
 if (!function_exists('session_forget')) {
-    function session_forget($key=null)
+    function session_forget($key=false)
     {
         if(isset($key)){
-            return session($key,null);
+            return session($key,false);
         }
         return;
     }
@@ -385,7 +440,7 @@ if (!function_exists('form_select')) {
     function form_select($name='',$data=[],$select=null,$attributes='')
     {
         $option = '<select name='.$name.'  '.$attributes.'>';
-        $option .= '<option value="">-- Select --</option>';
+        //$option .= '<option value="">-- Select --</option>';
         foreach ($data as $key => $value) {
             $selected = $key == $select ? ' selected ' : '';
             $option .= '<option '.$selected.' value='.$key.'>'.$value.'</option>';
@@ -435,12 +490,12 @@ if (!function_exists('notification')) {
  * Convert data to a format
  */
 if (!function_exists('date_conversion')) {
-    function date_conversion($date = null,$format='d-m-Y')
+    function date_conversion($format='d-m-Y',$date = null)
     {
         if (isset($date) && $date>0) {
-            $formated_date = date($format, strtotime($date));
+            $formatted_date = date($format, strtotime($date));
             // when date is 0 then sent null;
-            return preg_match('/12.[0-9]{1,2}[\s](am)/i',$formated_date,$match) ? null: $formated_date;
+            return preg_match('/12.[0-9]{1,2}[\s](am)/i',$formatted_date,$match) ? null: $formatted_date;
             ///(12:00)\s+(AM)$/i
         }
         return;
@@ -477,6 +532,159 @@ if(!function_exists('myLog')){
     }
 }
 
-function add_log($item) {
-    return error_log($item);
+/**
+ *  Password hash
+ *
+ */
+if(!function_exists('bcrypt')){
+    function bcrypt($password='') {
+        $options = [
+            'cost' => 10
+        ];
+        return password_hash($password, PASSWORD_BCRYPT, $options);
+    }
+}
+
+/**
+ *  Password verify
+ *
+ */
+if(!function_exists('verify_hash')) {
+    function verify_hash($password='',$password_hash='') {
+        //myLog("$password,$password_hash,".bcrypt($password));
+        return password_verify($password, $password_hash);
+    }
+}
+
+if(!function_exists('add_log')) {
+    function add_log($item)
+    {
+        return error_log($item);
+    }
+}
+
+/**
+ * Translate
+ */
+
+if(!function_exists('translate_number')) {
+    function translate_number($number = null, $to='en')
+    {
+        $bn_digits = array('০','১','২','৩','৪','৫','৬','৭','৮','৯','জানুয়ারী','ফেব্রুয়ারী',
+            'মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর',
+            'ডিসেম্বর','শনিবার','রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার' );
+        $en_digits = array('0','1','2','3','4','5','6','7','8','9','January','February',
+            'March','April','May','June','July','August','September','October','November',
+            'December','Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday');
+        if ($to == 'en')
+            $translated_number = str_replace($bn_digits, $en_digits, $number);
+        else
+            $translated_number = str_replace($en_digits,$bn_digits, $number);
+        return $translated_number;
+    }
+}
+
+if(!function_exists('calculate_ot_time')) {
+    function calculate_ot_time(string $out_time, string $shift_out_time)
+    {
+        if ((strtotime($shift_out_time) >= strtotime($out_time)))
+            return 0;
+
+        $date1 = date_create($out_time);
+        $date2 = date_create($shift_out_time);
+        $diff = date_diff($date1,$date2);
+        $ot_time = $diff->format("%H:%I");
+        $ot_time = $ot_time>0 ? $ot_time : 0;
+        return $ot_time;
+    }
+}
+
+if (!function_exists('calculate_total_ot')) {
+    function calculate_total_ot($day_status =null, $ot_time, $RoundAfter, $RoundFor) {
+        if (!in_array($day_status,['A','LV','H','W']) && $ot_time != 0) {
+            // generate round for ot time
+            $total_ot_hour = make_round_ot($ot_time, $RoundAfter, $RoundFor);
+            if ($total_ot_hour >= 2)
+                return $total_ot_hour;
+            return 0;
+        }
+    }
+}
+
+if (!function_exists('calculate_slab')) {
+    function calculate_slab($total_ot_hour) {
+        $slab = [];
+        $slab1 = 0;
+        $slab2 = 0;
+        if($total_ot_hour > 2) {
+            $slab1 = 2;
+            $rest_ot = $total_ot_hour-2;
+            if($rest_ot > 2) {
+                $slab2 = 2;
+            }
+            else {
+                $slab2 = $rest_ot;
+            }
+        }
+        else {
+            $slab1 = $total_ot_hour;
+        }
+        $slab[] = $slab1;
+        $slab[] = $slab2;
+
+        return $slab;
+    }
+}
+
+
+if(!function_exists('check_ot_status')) {
+    function check_ot_status($OT)
+    {
+        return ($OT == 1) ? true : false;
+    }
+}
+
+if(!function_exists('check_ot_ability')) {
+    function check_ot_ability($OTEntitledDate, $WorkDate)
+    {
+        return ($OTEntitledDate <= $WorkDate) ? true : false;
+    }
+}
+
+if(!function_exists('make_round_ot')) {
+    function make_round_ot($ot_time, $RoundAfter, $RoundFor)
+    {
+        if ($ot_time <=0 )
+            return 0;
+
+        $ot_hour = date_conversion('h', $ot_time);
+        $ot_minute = date_conversion('i', $ot_time);
+        //echo 'ot_hour: '.$ot_hour.'->'.'ot_minute: '.$ot_minute;
+        $round_minute = $ot_minute / 60;
+        if ($round_minute >= $RoundAfter) {
+            $ot_hour += intval($RoundFor);
+        }
+        return $ot_hour;
+    }
+}
+
+if (!function_exists('calculate_late_hour')) {
+    function calculate_late_hour(string $in_time, string $shift_in_time, int $late_margin)
+    {
+        $date1 = date_create($in_time);
+        $date2 = date_create($shift_in_time);
+        $diff = date_diff($date1,$date2);
+        $late_hour = 0;
+        if($diff->format("%H") > 0) {
+            $date = date_create($diff->format("%H:%I:%S"));
+            $date = date_sub($date,date_interval_create_from_date_string($late_margin." minutes"));
+            $late_hour = $date->format('H:i:s');
+        }
+        else if($diff->format("%I") > $late_margin) {
+            $date = date_create($diff->format("%H:%I:%S"));
+            $date = date_sub($date,date_interval_create_from_date_string($late_margin." minutes"));
+            $late_hour = $date->format('H:i:s');
+        }
+        return $late_hour;
+    }
 }

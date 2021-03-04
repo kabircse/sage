@@ -7,18 +7,24 @@
 
 define('ENVIRONMENT','development');
 
-if(ENVIRONMENT=='development' || ENVIRONMENT=='dev') {
-    error_reporting(E_ALL);
+if(ENVIRONMENT == 'development' || ENVIRONMENT == 'dev') {
+    // Enable display error to browser
     ini_set('display_errors',1);
+    ini_set('display_startup_errors', 1);
+
+    // Set which type of error display to browser
+    ini_set('error_reporting', E_ERROR | E_WARNING | E_NOTICE); //error_reporting(E_ALL);
 }
 
-//session file path
+// Set session file path
 ini_set('session.save_path', Root.'storage/sessions');
 
-// Error logging engine
+// Enable Error logging engine
 ini_set('log_errors', TRUE);
-// Logging file path
+
+// Set Error Logging file path
 ini_set('error_log', Root.'storage/logs/'.date('d-m-Y').'.log');
+
 //Return the last error that occurred
 error_get_last();
 
@@ -31,3 +37,4 @@ if(!isset($_SESSION)) {
 }
 
 $csrf_length = 32;
+$crypt_cost = 10;

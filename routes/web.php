@@ -13,3 +13,11 @@ $router->map('POST','/demo/save', 'DemoController@store');
 $router->map('DELETE|POST','/demo/delete/[i:id]', 'DemoController@destroy');
 $router->map('GET','/demo/status/[i:id]/[a:type]', 'DemoController@status');
 
+// user controller resources
+$router->map('GET','/user/index', 'UserController@index');
+$router->map('GET','/user/create', 'UserController@create');
+$router->map('POST','/user/save', 'UserController@store');
+$router->map('GET','/user/edit/[i:id]', 'UserController@edit');
+$router->map('PATCH|PUT|POST','/user/update/[i:id]', 'UserController@update');
+$router->map('DELETE|POST','/user/delete/[i:id]', 'UserController@destroy');
+
